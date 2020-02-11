@@ -10,20 +10,33 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Моя еда</h2>
+<br>
+<table border="1" cellpadding="8" cellspacing="0" style="margin: auto">
+    <tr>
+        <th><a href="meals?action=add"><img src="img/add.png" alt="add.png">Добавить еду</a></th>
+    </tr>
+</table>
+<br>
 <table border="1" cellpadding="8" cellspacing="0" style="margin: auto">
     <tr>
         <th>Дата/Время</th>
         <th>Описание</th>
         <th>Калории</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
-    <c:forEach items="${mealsTo}" var="meal">
-        <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-    <tr target=<%=meal.isExcess()%>>
-        <td><%=meal.getDateTime().toLocalDate()%>&nbsp;<%=meal.getDateTime().toLocalTime()%>
+    <c:forEach items="${mealsTo}" var="mealTo">
+        <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
+    <tr target=<%=mealTo.isExcess()%>>
+        <td><%=mealTo.getDateTime().toLocalDate()%>&nbsp;<%=mealTo.getDateTime().toLocalTime()%>
         </td>
-        <td><%=meal.getDescription()%>
+        <td><%=mealTo.getDescription()%>
         </td>
-        <td><%=meal.getCalories()%>
+        <td><%=mealTo.getCalories()%>
+        </td>
+        <td align="center"><a href="meals?id=${mealTo.id}&action=edit"><img src="img/pencil.png" alt="pencil.png"></a>
+        </td>
+        <td align="center"><a href="meals?id=${mealTo.id}&action=delete"><img src="img/delete.png" alt="delete.png"></a>
         </td>
     </tr>
     </c:forEach>
