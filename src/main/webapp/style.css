@@ -1,0 +1,11 @@
+h2 {
+    text-align: center;
+}
+
+tr[target=false] {
+    color: green;
+}
+
+tr[target=true] {
+    color: red;
+}
