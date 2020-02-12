@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,7 +71,7 @@ public class MealServlet extends HttpServlet {
             case "list":
             default:
                 int caloriesPerDay = 2000;
-                List<MealTo> mealsTo = MealsUtil.filteredByStreams(new ArrayList<>(storage.getAll().values()), LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
+                List<MealTo> mealsTo = MealsUtil.filteredByStreams((List<Meal>) storage.getAll().values(), LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
 
                 request.setAttribute("mealsTo", mealsTo);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
