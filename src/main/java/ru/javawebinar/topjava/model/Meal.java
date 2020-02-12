@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 public class Meal {
     private final String id;
@@ -13,10 +12,6 @@ public class Meal {
     private final String description;
 
     private final int calories;
-
-    public Meal(LocalDateTime dateTime, String description, int calories) {
-        this(UUID.randomUUID().toString(), dateTime, description, calories);
-    }
 
     public Meal(String id, LocalDateTime dateTime, String description, int calories) {
         this.id = id;

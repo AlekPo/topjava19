@@ -27,12 +27,12 @@
     </tr>
     <c:forEach items="${mealsTo}" var="mealTo">
         <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
-    <tr target=<%=mealTo.isExcess()%>>
-        <td><%=mealTo.getDateTime().toLocalDate()%>&nbsp;<%=mealTo.getDateTime().toLocalTime()%>
+    <tr target=${mealTo.excess}>
+        <td>${mealTo.dateTime.toLocalDate()}&nbsp;${mealTo.dateTime.toLocalTime()}
         </td>
-        <td><%=mealTo.getDescription()%>
+        <td>${mealTo.description}
         </td>
-        <td><%=mealTo.getCalories()%>
+        <td>${mealTo.calories}
         </td>
         <td align="center"><a href="meals?id=${mealTo.id}&action=edit"><img src="img/pencil.png" alt="pencil.png"></a>
         </td>

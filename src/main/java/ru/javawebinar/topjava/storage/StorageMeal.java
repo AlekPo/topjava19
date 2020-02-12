@@ -2,9 +2,9 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.List;
+import java.util.Map;
 
-public interface Storage {
+public interface StorageMeal {
 
     void save(Meal meal);
 
@@ -12,11 +12,7 @@ public interface Storage {
 
     void delete(String id);
 
-    void clear();
-
-    int size();
-
     Meal get(String id);
 
-    List<Meal> getAll();
+    Map<String, Meal> getAll();
 }
