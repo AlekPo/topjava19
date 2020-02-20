@@ -12,9 +12,11 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.*;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 public class MealRestController {
@@ -30,16 +32,12 @@ public class MealRestController {
     public Meal save(Meal meal) {
         log.info("save {}", meal);
         checkNew(meal);
-        meal.setUserId(SecurityUtil.authUserId());
-        return service.save(meal);
+        return service.save(meal, SecurityUtil.authUserId());
     }
 
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
-        assureIdConsistent(meal, id);
-        checkNotFoundWithId(get(id).getUserId() == SecurityUtil.authUserId(), id);
-        meal.setUserId(SecurityUtil.authUserId());
-        service.save(meal);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
@@ -57,52 +55,16 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("getAll");
+    public List<MealTo> getAllForDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getAllForDateTime");
 
-        if (startDate == null) {
-            startDate = LocalDate.MIN;
-        }
-        if (startTime == null) {
-            startTime = LocalTime.MIN;
-        }
-        if (endDate == null) {
-            endDate = LocalDate.MAX;
-        }
-        if (endTime == null) {
-            endTime = LocalTime.MAX;
-        }
+        startDate = (Objects.isNull(startDate) ? LocalDate.MIN : startDate);
+        endDate = (Objects.isNull(endDate) ? LocalDate.MAX : endDate);
+        startTime = (Objects.isNull(startTime) ? LocalTime.MIN : startTime);
+        endTime = (Objects.isNull(endTime) ? LocalTime.MAX : endTime);
 
-        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId(), startDate, startTime, endDate, endTime), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-    }
+        Collection<Meal> meals = service.getAllForDate(SecurityUtil.authUserId(), startDate, endDate);
 
-    public List<MealTo> getAll(String startDateStr, String startTimeStr, String endDateStr, String endTimeStr) {
-        log.info("getAll");
-
-        LocalDate startDate, endDate;
-        LocalTime startTime, endTime;
-
-        if (startDateStr == null || startDateStr.isEmpty()) {
-            startDate = LocalDate.MIN;
-        } else {
-            startDate = LocalDate.parse(startDateStr);
-        }
-        if (startTimeStr == null || startTimeStr.isEmpty()) {
-            startTime = LocalTime.MIN;
-        } else {
-            startTime = LocalTime.parse(startTimeStr);
-        }
-        if (endDateStr == null || endDateStr.isEmpty()) {
-            endDate = LocalDate.MAX;
-        } else {
-            endDate = LocalDate.parse(endDateStr);
-        }
-        if (endTimeStr == null || endTimeStr.isEmpty()) {
-            endTime = LocalTime.MAX;
-        } else {
-            endTime = LocalTime.parse(endTimeStr);
-        }
-
-        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId(), startDate, startTime, endDate, endTime), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getFilteredTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY, startTime, endTime);
     }
 }
