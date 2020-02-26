@@ -12,11 +12,10 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN;
 import static ru.javawebinar.topjava.UserTestData.USER;
 
 @ContextConfiguration({
@@ -42,12 +41,19 @@ public class MealServiceTest {
         Meal created = service.create(newMeal, USER.getId());
         Integer newId = created.getId();
         newMeal.setId(newId);
-        assertThat(created).isEqualTo(newMeal);
-        assertThat(service.get(newId, USER.getId())).isEqualTo(newMeal);
+//        assertThat(created).isEqualTo(newMeal);
+//        assertThat(service.get(newId, USER.getId())).isEqualTo(newMeal);
+        assertMatch(created, newMeal);
+        assertMatch(service.get(newId, USER.getId()), newMeal);
+    }
+
+    @Test
+    public void delete() {
+        service.delete(MEAL_1.getId(), USER.getId());
     }
 
     @Test(expected = NotFoundException.class)
-    public void delete() {
+    public void deleteAndGet() {
         service.delete(MEAL_1.getId(), USER.getId());
         service.get(MEAL_1.getId(), USER.getId());
     }
@@ -57,10 +63,16 @@ public class MealServiceTest {
         service.delete(1, 1);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void deletedAlienMeal() {
+        service.delete(MEAL_1.getId(), ADMIN.getId());
+    }
+
     @Test
     public void get() {
         Meal meal = service.get(MEAL_1.getId(), USER.getId());
-        assertThat(meal).isEqualTo(MEAL_1);
+//        assertThat(meal).isEqualTo(MEAL_1);
+        assertMatch(meal, MEAL_1);
     }
 
     @Test(expected = NotFoundException.class)
@@ -68,16 +80,23 @@ public class MealServiceTest {
         service.get(1, 1);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void getAlienMeal() {
+        service.get(MEAL_1.getId(), ADMIN.getId());
+    }
+
     @Test
     public void getBetweenHalfOpen() {
         List<Meal> meals = service.getBetweenHalfOpen(null, null, USER.getId());
-        assertThat(meals).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
+//        assertThat(meals).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
+        assertMatch(meals, MEAL_2, MEAL_1);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER.getId());
-        assertThat(all).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
+//        assertThat(all).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
+        assertMatch(all, MEAL_2, MEAL_1);
     }
 
     @Test
@@ -87,6 +106,26 @@ public class MealServiceTest {
         updated.setDescription("UpdatedMeal");
         updated.setCalories(111);
         service.update(updated, USER.getId());
-        assertThat(service.get(updated.getId(), USER.getId())).isEqualTo(updated);
+//        assertThat(service.get(updated.getId(), USER.getId())).isEqualTo(updated);
+        assertMatch(service.get(updated.getId(), USER.getId()), updated);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void updateNotFound() {
+        Meal updated = new Meal(MEAL_1);
+        updated.setId(1);
+        updated.setDateTime(LocalDateTime.now());
+        updated.setDescription("UpdatedMeal");
+        updated.setCalories(111);
+        service.update(updated, USER.getId());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void updateAlienMeal() {
+        Meal updated = new Meal(MEAL_1);
+        updated.setDateTime(LocalDateTime.now());
+        updated.setDescription("UpdatedMeal");
+        updated.setCalories(111);
+        service.update(updated, ADMIN.getId());
     }
 }

@@ -32,7 +32,13 @@ CREATE TABLE meals
   description VARCHAR                                                     NOT NULL,
   calories    INTEGER                                                     NOT NULL,
   user_id     INTEGER                                                     NOT NULL
-    constraint meals_users_id_fk
-      references users
-      on delete cascade
+    CONSTRAINT meals_users_id_fk
+      REFERENCES users
+      ON DELETE CASCADE
 );
+ALTER TABLE meals
+  OWNER TO "user";
+
+CREATE UNIQUE INDEX meals_datetime_uindex
+  ON meals (datetime DESC);
+
