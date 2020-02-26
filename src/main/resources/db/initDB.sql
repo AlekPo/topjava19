@@ -36,9 +36,5 @@ CREATE TABLE meals
       REFERENCES users
       ON DELETE CASCADE
 );
-ALTER TABLE meals
-  OWNER TO "user";
-
-CREATE UNIQUE INDEX meals_datetime_uindex
-  ON meals (datetime DESC);
-
+CREATE UNIQUE INDEX meals_datetime_user_id_uindex
+  ON meals (datetime DESC, user_id ASC);

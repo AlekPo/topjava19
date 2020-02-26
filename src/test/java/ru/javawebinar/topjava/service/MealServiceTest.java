@@ -8,15 +8,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.ADMIN;
-import static ru.javawebinar.topjava.UserTestData.USER;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -37,25 +40,23 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = getNew();
-        Meal created = service.create(newMeal, USER.getId());
+        Meal newMeal = MealTestData.getNew();
+        Meal created = service.create(newMeal, USER_ID);
         Integer newId = created.getId();
         newMeal.setId(newId);
-//        assertThat(created).isEqualTo(newMeal);
-//        assertThat(service.get(newId, USER.getId())).isEqualTo(newMeal);
         assertMatch(created, newMeal);
-        assertMatch(service.get(newId, USER.getId()), newMeal);
+        assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
     public void delete() {
-        service.delete(MEAL_1.getId(), USER.getId());
+        service.delete(MEAL_1_ID, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteAndGet() {
-        service.delete(MEAL_1.getId(), USER.getId());
-        service.get(MEAL_1.getId(), USER.getId());
+        service.delete(MEAL_1_ID, USER_ID);
+        service.get(MEAL_1_ID, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
@@ -65,13 +66,12 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void deletedAlienMeal() {
-        service.delete(MEAL_1.getId(), ADMIN.getId());
+        service.delete(MEAL_1_ID, ADMIN_ID);
     }
 
     @Test
     public void get() {
-        Meal meal = service.get(MEAL_1.getId(), USER.getId());
-//        assertThat(meal).isEqualTo(MEAL_1);
+        Meal meal = service.get(MEAL_1_ID, USER_ID);
         assertMatch(meal, MEAL_1);
     }
 
@@ -82,21 +82,19 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void getAlienMeal() {
-        service.get(MEAL_1.getId(), ADMIN.getId());
+        service.get(MEAL_1_ID, ADMIN_ID);
     }
 
     @Test
     public void getBetweenHalfOpen() {
-        List<Meal> meals = service.getBetweenHalfOpen(null, null, USER.getId());
-//        assertThat(meals).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
-        assertMatch(meals, MEAL_2, MEAL_1);
+        List<Meal> meals = service.getBetweenHalfOpen(LocalDate.of(2015, Month.JUNE, 1), LocalDate.of(2015, Month.JUNE, 2), USER_ID);
+        assertMatch(meals, MEAL_6, MEAL_2, MEAL_1);
     }
 
     @Test
     public void getAll() {
-        List<Meal> all = service.getAll(USER.getId());
-//        assertThat(all).isEqualTo(Arrays.asList(MEAL_2, MEAL_1));
-        assertMatch(all, MEAL_2, MEAL_1);
+        List<Meal> all = service.getAll(USER_ID);
+        assertMatch(all, MEAL_7, MEAL_6, MEAL_2, MEAL_1);
     }
 
     @Test
@@ -105,9 +103,8 @@ public class MealServiceTest {
         updated.setDateTime(LocalDateTime.now());
         updated.setDescription("UpdatedMeal");
         updated.setCalories(111);
-        service.update(updated, USER.getId());
-//        assertThat(service.get(updated.getId(), USER.getId())).isEqualTo(updated);
-        assertMatch(service.get(updated.getId(), USER.getId()), updated);
+        service.update(updated, USER_ID);
+        assertMatch(service.get(updated.getId(), USER_ID), updated);
     }
 
     @Test(expected = NotFoundException.class)
@@ -117,7 +114,7 @@ public class MealServiceTest {
         updated.setDateTime(LocalDateTime.now());
         updated.setDescription("UpdatedMeal");
         updated.setCalories(111);
-        service.update(updated, USER.getId());
+        service.update(updated, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
@@ -126,6 +123,6 @@ public class MealServiceTest {
         updated.setDateTime(LocalDateTime.now());
         updated.setDescription("UpdatedMeal");
         updated.setCalories(111);
-        service.update(updated, ADMIN.getId());
+        service.update(updated, ADMIN_ID);
     }
 }
