@@ -18,7 +18,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.Profiles.JDBC;
+import static ru.javawebinar.topjava.Profiles.DATAJPA;
+import static ru.javawebinar.topjava.Profiles.POSTGRES_DB;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
@@ -30,19 +31,10 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
-//        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
         String[] strings = {"spring/spring-app.xml", "spring/spring-db.xml"};
         springContext = new ClassPathXmlApplicationContext(strings, false);
-        springContext.getEnvironment().setActiveProfiles(JDBC);
+        springContext.getEnvironment().setActiveProfiles(POSTGRES_DB, DATAJPA);
         springContext.refresh();
-//
-//    GenericXmlApplicationContext springContext = new GenericXmlApplicationContext ();
-//    ConfigurableEnvironment env = springContext.getEnvironment ();
-//    env.setActiveProfiles (JDBC);
-//    springContext.load ("spring/spring-app.xml", "spring/spring-db.xml");
-//    springContext.refresh ();
-//
         mealController = springContext.getBean(MealRestController.class);
     }
 
