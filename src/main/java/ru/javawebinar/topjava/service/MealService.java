@@ -14,7 +14,7 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.atStartOfNextDayOrMax;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
-public class MealService {
+public class MealService implements AbstractEntityService {
 
     private final MealRepository repository;
 
