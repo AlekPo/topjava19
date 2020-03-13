@@ -1,26 +1,26 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.service.jpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import ru.javawebinar.topjava.Profiles;
-import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.service.UserServiceTest;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"
 })
 @ActiveProfiles(Profiles.JPA)
-public class JpaMealServiceTest extends MealServiceTest {
+public class JpaUserServiceTest extends UserServiceTest {
 
     @Autowired
-    private static MealService service;
+    private static UserService service;
     @Autowired
-    private static MealRepository repository;
+    private static UserRepository repository;
 
-    public JpaMealServiceTest() {
+    public JpaUserServiceTest() {
         super(service, repository);
     }
-
-
 }
